@@ -3,7 +3,7 @@ require 'optparse'
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: ruby main.rb path/to/textfile.txt [--output path/to/output.txt]"
+  opts.banner = "Usage: ruby ocr.rb path/to/textfile.txt [--output path/to/output.txt]"
 
   opts.on("--output FILE", "Optional output file to write account numbers") do |file|
     options[:output] = file
@@ -11,7 +11,7 @@ OptionParser.new do |opts|
 end.parse!
 
 if ARGV.empty?
-  puts "Usage: ruby main.rb path/to/textfile.txt [--output path/to/output.txt]"
+  puts "Usage: ruby ocr.rb path/to/textfile.txt [--output path/to/output.txt]"
   exit
 end
 
