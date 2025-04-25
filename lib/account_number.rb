@@ -47,11 +47,15 @@ class AccountNumber
     end
 
     def valid_checksum?
-        return false unless digits.all? { |digit| digit.valid? }
+        return false unless legible?
         sum = digits.reverse.each_with_index.sum do |digit, index|
             digit.number * (index + 1)
         end
         
         sum % 11 == 0
+    end
+
+    def legible?
+        digits.all? { |digit| digit.valid? }
     end
 end

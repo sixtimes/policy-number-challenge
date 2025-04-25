@@ -84,9 +84,30 @@ RSpec.describe AccountNumber do
     end
 
     it 'returns false if any digit is non-numeric' do
-      broken_digits = [double("Digit", number: 1, valid?: true), double("Digit", number: nil, valid?: false), double("Digit", number: 3, valid?: true)]
+      broken_digits = [double("Digit", number: 1, valid?: true), double("Digit", number: "?", valid?: false), double("Digit", number: 3, valid?: true)]
       account_number = described_class.new(raw_input)
       allow(account_number).to receive(:digits).and_return(broken_digits)
+      expect(account_number.valid_checksum?).to be false
+    end
+  end
+  describe '#legible?' do
+    let(:legible_digits) do
+      [double("Digit", number: 0, valid?: true), double("Digit", number: 0, valid?: true), double("Digit", number: 0, valid?: true)]
+    end
+
+    let(:illegible_digits) do
+      [double("Digit", number: 1, valid?: true), double("Digit", number: "?", valid?: false), double("Digit", number: 1, valid?: true)]
+    end
+
+    it 'returns true for a legible account number' do
+      account_number = described_class.new(raw_input)
+      allow(account_number).to receive(:digits).and_return(legible_digits)
+      expect(account_number.legible?).to be true
+    end
+
+    it 'returns false for an illegible account number' do
+      account_number = described_class.new(raw_input)
+      allow(account_number).to receive(:digits).and_return(illegible_digits)
       expect(account_number.valid_checksum?).to be false
     end
   end
