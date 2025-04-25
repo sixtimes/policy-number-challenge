@@ -20,7 +20,7 @@ RSpec.describe AccountNumber do
       bad_input = [line1, line2[0..-2], line3]
       expect {
         described_class.new(bad_input).send(:parse_line_length)
-      }.to raise_error(ArgumentError, /Not all lines are the same length/)
+      }.to raise_error(ArgumentError, "Not all lines are the same length")
     end
   end
 
@@ -45,12 +45,12 @@ RSpec.describe AccountNumber do
 
       expect {
         described_class.new(invalid_input).digits
-      }.to raise_error(ArgumentError, /AccountNumber must be initialized with exactly/)
+      }.to raise_error(ArgumentError, "AccountNumber must be initialized with exactly 3 lines")
     end
   end
 
   describe '#to_s' do
-    it 'joins parsed digits into a string representation' do
+    it 'joins parsed digits into an account number' do
       stub_const("Digit::HEIGHT", 3)
       stub_const("Digit::WIDTH", 3)
       digit_double = double("Digit", to_s: "1")
@@ -59,6 +59,35 @@ RSpec.describe AccountNumber do
 
       account_number = described_class.new(raw_input)
       expect(account_number.to_s).to eq("1" * 9)
+    end
+  end
+
+  describe '#valid_checksum?' do
+    let(:valid_digits) do
+      [double("Digit", number: 0, valid?: true), double("Digit", number: 0, valid?: true), double("Digit", number: 0, valid?: true)]
+    end
+
+    let(:invalid_digits) do
+      [double("Digit", number: 1, valid?: true), double("Digit", number: 1, valid?: true), double("Digit", number: 1, valid?: true)]
+    end
+
+    it 'returns true for a valid checksum' do
+      account_number = described_class.new(raw_input)
+      allow(account_number).to receive(:digits).and_return(valid_digits)
+      expect(account_number.valid_checksum?).to be true
+    end
+
+    it 'returns false for an invalid checksum' do
+      account_number = described_class.new(raw_input)
+      allow(account_number).to receive(:digits).and_return(invalid_digits)
+      expect(account_number.valid_checksum?).to be false
+    end
+
+    it 'returns false if any digit is non-numeric' do
+      broken_digits = [double("Digit", number: 1, valid?: true), double("Digit", number: nil, valid?: false), double("Digit", number: 3, valid?: true)]
+      account_number = described_class.new(raw_input)
+      allow(account_number).to receive(:digits).and_return(broken_digits)
+      expect(account_number.valid_checksum?).to be false
     end
   end
 end

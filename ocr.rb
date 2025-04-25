@@ -12,14 +12,17 @@ begin
 
   parsed_entries = PolicyOcr.parse(content)
 
-  parsed_entries.each_with_index do |entry, index|
-    puts "Entry #{index + 1}:"
-    # entry.each_with_index do |line, line_index|
-      # puts "  Line #{line_index + 1}: #{line}"
-    # end
-    puts entry
+  parsed_entries.each_with_index do |account_number, index|
+    puts "Account Number #{index + 1}:"
+    puts account_number.raw
+    puts " "
+    puts account_number
+    puts " "
+    puts account_number.valid_checksum? ? "Valid Checksum" : "Invalid Checksum"
     puts "-" * 20
   end
+
+  puts
 rescue Errno::ENOENT
   puts "File not found: #{file_path}"
 rescue => e

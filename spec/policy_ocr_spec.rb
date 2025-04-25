@@ -6,7 +6,7 @@ describe PolicyOcr do
   end
 
   it 'loads the sample.txt' do
-    expect(fixture('sample').lines.count).to eq(44)
+    expect(fixture('sample').lines.count).to eq(47)
   end
 
   describe '.isolate_account_numbers' do

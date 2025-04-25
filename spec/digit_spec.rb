@@ -22,7 +22,15 @@ RSpec.describe Digit do
     [
       " _ ",
       "| |",
-      "|__|" # Too many characters in the last row
+      "|__|"
+    ]
+  end
+
+  let(:unknown_grid) do
+    [
+      "|||",
+      "|||",
+      "|||"
     ]
   end
 
@@ -36,13 +44,12 @@ RSpec.describe Digit do
     it 'raises error for incorrect grid height' do
       expect {
         Digit.new(invalid_grid_short)
-      }.to raise_error(ArgumentError, /Grid must be 3x3/)
+      }.to raise_error(ArgumentError, "Grid must be 3x3")
     end
-
     it 'raises error for inconsistent row widths' do
       expect {
         Digit.new(invalid_grid_size)
-      }.to raise_error(ArgumentError, /Grid must be 3x3/)
+      }.to raise_error(ArgumentError, "Grid must be 3x3")
     end
   end
 
@@ -54,17 +61,31 @@ RSpec.describe Digit do
 
     it 'returns correct digit index if grid matches' do
       digit = Digit.new(zero_grid)
-      expect(digit.number).to eq(0)
+      expect(digit.value).to eq(0)
     end
 
-    it 'returns nil if grid does not match any known digit' do
-      unknown_grid = [
-        "___",
-        "|||",
-        "|||"
-      ]
+    it 'returns "?" if grid does not match any known digit' do
       digit = Digit.new(unknown_grid)
-      expect(digit.number).to be_nil
+      expect(digit.value).to eq "?"
+    end
+  end
+
+  describe '#value' do
+    it 'returns the correct numeric value' do
+      digit = Digit.new(zero_grid)
+      expect(digit.value).to eq(0)
+    end
+  end
+
+  describe '#valid?' do
+    it 'returns true for a recognized digit' do
+      digit = Digit.new(zero_grid)
+      expect(digit.valid?).to be true
+    end
+
+    it 'returns false for an unrecognized digit' do
+      digit = Digit.new(unknown_grid)
+      expect(digit.valid?).to be false
     end
   end
 
